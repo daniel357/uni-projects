@@ -1,0 +1,4 @@
+C++|programming, OOP| general purposed language
+Quadratic eq|Sq root, discriminant| a*x2+b*x+c=0
+Java| programming language, Web| suited World wide web
+Jack Sparrow|pirate, Caribbean, Black Pearl| Pirates of caribbean
