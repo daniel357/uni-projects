@@ -1,0 +1,13 @@
+DB_ENGINE=django.db.backends.sqlite3
+DB_NAME=db.sqlite3
+DB_USER=none
+DB_PASS=none
+DB_HOST=noe
+DB_PORT=none
+
+DB_ENGINE=django.db.backends.postgresql_psycopg2
+DB_NAME=airport_management
+DB_USER=db_user
+DB_PASS=db_pass
+DB_HOST=127.0.0.1
+DB_PORT=5432
