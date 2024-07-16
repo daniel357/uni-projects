@@ -1,0 +1,139 @@
+1. What is the purpose of ICMP?
+	a) To offer feedback on errors and give updates on IP packets 
+	b) To direct data packets through networks
+	c) To ensure the confidentiality of data transmission
+	d) To establish a system for identifying devices on a network
+answer: A
+
+2. What does ARP do?
+	a) assigns names to devices on a network
+	b) manages the routing of packets through networks
+	c) ensures secure data transfer
+	d) correlates IP addresses with MAC addresses 
+answer: D
+
+3. Why TCP traffic is elastic traffic?
+	a) TCP sends traffic at a constant rate.
+	b) TCP adjusts traffic rate based on congestion.
+	c) TCP maintains end-to-end flow control.
+	d) None of the above
+answer: B
+
+4. What does a router do?
+	a) It calculates the entire path for an IP packet from the source to the final host
+	b) It uses ARP to move the packet to the next step
+	c) It uses DNS to advance the packet to the next step
+	d) It tries to take the IP packet one step closer to its destination.
+answer: D
+
+5. What is the broadcast address for the network in which 192.168.242.5/20 is located?
+	a) 192.168.251.251
+	b) 192.168.250.250
+	c) 192.168.255.255
+	d) 192.168.250.251
+answer: C (because broadcast address is the biggest one in the network)
+
+6. Given the network mask id of 255.255.240.0, how many hosts are there?
+	a) 256
+	b) 4094
+	c) 100
+	d)192.168.250.252
+answer: B (bescause 255.255.240.0 is 20-bit mask => 12 bits for hosts =>2^12-2=4096-2=4094)
+
+7. The maximum length (in bytes) of an IPv4 datagram is?
+	a) 32
+	b) 65535
+	c) 1024
+	d) 516
+answer: B
+
+8. Devices on one network can communicate with devices on another network via a 
+	a) File Server
+	b) Utility Server
+	c) Printer Server 
+	d) Gateway
+answer: D
+
+9. To achieve reliable transport in TCP, for the safe and sound arrival of data we use the
+	a) Packet
+	b) Buffer
+	c) Segment
+	d) Acknowledgment
+answer: D
+
+10. Communication offered by TCP is 
+	a) Full-duplex
+	b) Half-duplex
+	c) Semi-duplex
+	d) Byte by byte
+answer: A
+
+11. TCP process may not write and read data at the same speed. So, for storage of the unprocessed data, we need .
+	a) Packets
+	b) Buffers
+	c) Segments
+	d) Stacks
+Answer: B
+
+12. IP(internet protocol) is located at
+	a)physical layer
+	b)link layer
+	c)network layer
+	d)application layer
+Answer: C
+
+13. Which protocol is used by Ping?
+	a) TCP
+	b) IP
+	c) IMCP
+	d) ARP
+Answer: C
+
+14. ARP can be used for:
+	a) correlating network addresses with physical (MAC) addresses
+	b) sending emails
+	c) assigning IP addresses
+	d) accessing the internet
+answer: A
+
+15. Which of the following are considered link layer protocols?
+	A) Ethernet
+	B) ARP
+	C) ICMP
+	D) Both A and B
+answer: D
+
+16. How does the checksum in UDP packet header used?
+	a) To detect errors in the packet
+	b) To ensure the packet is sent to the correct destination
+	c) Both A and B
+	d) None of the above
+answer: A
+
+17. Which of the following is used to connect a LAN to the internet and translates between different network protocols?
+	A) Switch
+	B) Hub
+	C) Router
+	D) Gateway
+answer: D
+
+18. Which of the following is used to connect a wireless device to a wired network?
+	A) Switch
+	B) Hub
+	C) Router
+	D) Access Point
+answer: D
+
+19. Which of the following is used to connect devices in different geographic locations?
+	A) Switch
+	B) Hub
+	C) Router
+	D) Gateway
+Answer: C
+
+20. Which of the following are used for remote access?
+	A) RDP
+	B) Telnet
+	C) VPN
+	D) All of the above
+answer: D

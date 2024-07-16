@@ -1,0 +1,515 @@
+%1.a. https://swish.swi-prolog.org/#tabbed-tab-0Write a predicate to determine the lowest common multiple of a list formed from integer numbers.
+%b.Write a predicate to add a value v after 1-st, 2-nd, 4-th, 8-th, ... element in a list.
+
+                %model
+                %	gcd(A,B) = {
+                %		A,if B=0
+                %		B,if A=0
+                %		gcd(A%B, B), if A>B
+                %		gcd(A,B%A), if B>A
+                %		
+                %gcd(A:number, B:number, R:result)
+                %gcd(i,i,o)
+
+gcd(0,B,B):-!.
+gcd(A,0,A):-!.
+gcd(A,B,R):-
+    A>=B,
+    A1 is A mod B,
+    gcd(A1,B,R),!.
+gcd(A,B,R):-
+    A<B,
+    B1 is B mod A,
+    gcd(A,B1,R),!.
+
+              %mathematical model 
+              %lcd(a,b) = { a*b/gcd(a,b) }
+              %
+              %flow model(i,i,o)
+              %
+              %lcd(a-number, b-number, r-result)
+              %
+
+lcd(A,B,R):-
+    gcd(A,B, RGCD),
+    R is A*B/RGCD.
+
+%lcmlist(l1l2..ln) ={	l1, if n=1
+%						lcm(l1,lcmlist(l2..ln)), otherwise
+%
+%lcmlist(L-list,R-result)
+%flow model(i,o)
+%
+
+lcmlist([L],L):-!.
+lcmlist([H|T], R):-
+    lcmlist(T,R1),
+    lcd(H,R1,R).
+
+
+%b
+
+%mathematical model
+%insertAtPosition(l1l2..ln,v, pos,index) = {
+%				[], if n=0
+%				l1 U {v} U insertAtPosition(l2...ln, v,pos*2,index+1), if index = pos
+%				l1 U insertAtPosition(l2...ln, v, pos, index+1), otherwise
+%				}
+%isertAtPosition(L-list, v-value, pos-positon to insert at, index- current index, R-resulted list)
+%
+%flow model(i,i,i,i,o)
+%
+
+insertAtPosition([], _,_,_,[]):-!.
+insertAtPosition([H|T], V, POS, INDEX, [H,V|R]):-
+    POS =:= INDEX,
+    NPOS is POS*2,
+    NINDEX is INDEX+1,
+    insertAtPosition(T,V, NPOS, NINDEX, R).
+insertAtPosition([H|T], V,POS,INDEX, [H|R]):-
+    POS \= INDEX,
+    NINDEX is INDEX +1,
+    insertAtPosition(T,V,POS,NINDEX,R).
+
+
+% a. Write a predicate to remove all occurrences of a certain atom from a list.
+
+% Model matematic:
+%	removeAllOccurences(l1l2..ln, e) ={ [], if n=0
+%   									removeAllOccurences(l2..ln,e), if l1=e
+%   									l1 U removeAllOccurences(l2..ln,e) otherwise
+%   removeAllOccurences(l=list, e=element to remove, R-result)
+%   flow model(i,i,o)
+%   
+%
+
+removeAllOccurences([], _, []):-!.
+removeAllOccurences([E|T], E, R):-
+    removeAllOccurences(T,E,R), !.
+removeAllOccurences([H|T],E,[H|R]):-
+    removeAllOccurences(T,E,R), !.
+
+% b. Define a predicate to produce a list of pairs (atom n) from an initial list of atoms.
+%  In this initial list atom has n occurrences.
+%  Eg.: numberatom([1, 2, 1, 2, 1, 3, 1], X) => X = [[1, 4], [2, 2], [3, 1]]
+%  
+%  mathematical model
+%  countOccurences(l1l2..ln,e) ={	[], if n=0
+%  									1+countOccurences(l2..ln,e), if l1==e
+%  									countOccurences(l2..ln,e), otherwise
+%  								}
+%
+countOccurences([],_,0):-!.
+countOccurences([E|T], E, R1):-
+    	countOccurences(T,E,R),
+    R1 is R+1, !.
+countOccurences([_|T],E,R):-
+    countOccurences(T,E,R),!.
+
+%
+%numberatom(l1l2..ln) ={ [], if n=0
+%						{l1,countOccurences(l1l2..ln,l1)} U numberatom(removeAllOccurences(l1l2..ln,l1))
+%						}
+%
+
+numberatom([],[]):-!.
+numberatom([H|T], [[H,NRO]|R]):-
+    countOccurences([H|T], H,NRO),
+    removeAllOccurences([H|T], H,NEWR),
+    numberatom(NEWR,R).
+
+
+% Define a predicate to remove from a list all repetitive elements.
+% Eg.: l=[1,2,1,4,1,3,4] => l=[2,3])
+  
+%
+%remove_duplicates(l1l2..ln) = {[], if n=0
+%								remove_duplicates(removeAllOccurences(l2..ln,l1)) if countOccurences(l2..ln,l1)>=1
+%								{l1}U remove_duplicates(l2..ln), otherwise
+%								
+%
+
+remove_duplicates([], []):-!.
+remove_duplicates([H|T], R):-
+    countOccurences(T,H,NROCC),
+    NROCC >=1,
+    removeAllOccurences(T,H,RR),
+    remove_duplicates(RR, R),!.
+remove_duplicates([H|T],[H|R]):-
+    countOccurences(T,H,NROCC),
+    NROCC =:=0,
+    remove_duplicates(T,R),!.
+
+
+
+
+%getmaxval(l1l2..ln, max) ={ l1,if n=1
+%							getmaxval(l2..ln, l1), if l1>max
+%							getmaxval(l2..ln, max), otherwise
+%							}
+%
+%
+maximum(A,B,A):- A>=B.
+maximum(A,B,B):-B>A.
+    
+    
+getmax([E],E):-!.
+getmax([H|T],R):-
+    getmax(T,RM),
+    maximum(H,RM,R), !.
+
+
+main(L,R):-
+    getmax(L,RM),
+    removeAllOccurences(L,RM,R).
+
+
+
+%  Write a predicate to determine the difference of two sets.
+%  
+%  
+%  
+%	set_difference(l1l2..ln,r1r2..rn) ={
+%						[], if L=empy
+%						set_difference(l2..ln,r1r2..rn), if countOccurences(r1r2..rn, l1)>=1
+%						{l1} U set_difference(l2..ln,r1r2..rn), otherwise.
+%						
+%
+
+setDifference([], _,[]):-!.
+setDifference([H|T],L2, R):-
+    countOccurences(L2,H,NROCC),
+    NROCC>=1,
+    setDifference(T,L2,R),!.
+setDifference([H|T],L2,[H|R]):-
+    countOccurences(L2,H,NROCC),
+    NROCC=:=0,
+    setDifference(T,L2,R),!.
+
+% Write a predicate to add value 1 after every even element from a list.
+%
+%insert1(l1l2..ln) ={ [], if L=empty
+%					{l1,1} U insert1(l2..ln), if l1 is even
+%					{l1} U insert1(l2..ln), otherwise
+%					
+%
+
+insert1([],[]):-!.
+insert1([H|T],[H,1|R]):-
+    H mod 2 =:=0,
+    insert1(T,R).
+insert1([H|T],[H|R]):-
+    H mod 2\=0,
+    insert1(T,R).
+
+
+
+
+
+% a. Write a predicate to compute the union of two sets.
+%	union(l1l2..ln,p1p2..pm) ={
+%							[], if m=0
+%							{p1} U union(l1l2..ln, p2..pm), if countOccurences(l1l2..ln, p1) ==0
+%							union(l1l2..ln, p2..pm), otherwise
+%
+
+union(L,[],L):-!.
+union(L,[H|T], [H|R]):-
+    countOccurences(L,H,NROC),
+    NROC=:=0,
+    union(L,T,R).
+union(L,[H|T], R):-
+    countOccurences(L,H,NROC),
+    NROC>0,
+    union(L,T,R).
+
+
+% b. Write a predicate to determine the set of all the pairs of elements in a list.
+% Eg.: L = [a b c d] => [[a b] [a c] [a d] [b c] [b d] [c d]].
+%
+%
+%pairswithe(l1l2..ln, e) ={
+%						[], if n=0
+%						{e,l1} U pairswithe(l2..ln,e), otherwise
+%						
+%allpairs(l1l2..ln) ={
+%				[], in n=0
+%				pairswithe(l2..ln,l1) U allpairs(l2..ln), otherwise						
+%
+
+pairswithe([],_,[]):-!.
+pairswithe([H|T],E,[[E,H]|R]):-
+    pairswithe(T,E,R).
+
+allpairs([], []):-!.
+allpairs([H|T], RES):-
+    allpairs(T,R),
+    pairswithe(T,H,P),
+  	union(R,P,RES),!.
+
+
+% a. Write a predicate to test if a list is a set.
+%is_set(l1l2..ln) ={ [], true
+%					is_set(l2..ln) if countOccurences(l1l2..ln,l1) =1
+%					else false
+%
+
+isset([]).
+isset([H|T]):-
+    countOccurences(T,H,R),
+    R=:=0,
+    isset(T).
+
+
+% b. Write a predicate to remove the first three occurrences of an element in a list.
+%  If the element occurs less than three times, all occurrences will be removed.
+
+%remove3occ(l1l2..ln, e, count) ={ [], if n=0
+%									l1l2..ln,if count==3
+%									remove3occ(l2..ln,e,count+1) if l1=e
+%									l1 U remove3occ(l2..ln,e,count), otherwise
+%									}
+%
+%
+
+remove3occ([],_,_,[]):-!.
+remove3occ(L,_,C,L):-
+    C=:=3.
+remove3occ([H|T],E,C,R):-
+    H=:=E,
+    NC is C+1,
+    remove3occ(T,E,NC,R),!.
+remove3occ([H|T], E,C,[H|R]):-
+    H\=E,
+    remove3occ(T,E,C,R),!.
+
+% a. Write a predicate to compute the intersection of two sets
+%inters(l1l2..ln,p1p2..pn)={[], n=0
+%							l1 U inters(l2..ln,p1p2..pn), if countOccurences(p1p2..pn,l1)>=1
+%							inters(l2..ln,p1p2..pn), otherwise
+%			
+%
+
+inters([],_,[]):-!.
+inters([H|T], P, [H|R]):-
+    countOccurences(P,H,OC),
+    OC>=1,
+    removeAllOccurences(T,H,NL),
+    inters(NL,P,R),!.
+inters([H|T], P, R):-
+    countOccurences(P,H,OC),
+    OC=:=0,
+    inters(T,P,R),!.
+
+
+% b. Write a predicate to create a list (m, ..., n)
+%  of all integer numbers from the interval [m, n]
+
+%
+%interval(m,n)={[], m>n
+%				m U interval(m+1,n).
+%
+  
+
+interval(M,N,[]):-M>N,!.
+interval(M,N,[M|R]):-
+    NM is M+1,
+    interval(NM,N,R),!.
+
+
+
+%a) Write a predicate to determine if a list has even numbers of elements without
+%  counting the elements from the list.
+
+%
+%evenlist(l1l2..ln) ={true, n=0
+%					false,n=1
+%					evenlist(l3..ln)
+%					}
+%					
+%
+%
+
+evenlist([]).
+evenlist([_,_|T]):-
+    evenlist(T).
+
+
+% b. Write a predicate to delete first occurrence of the minimum number from a list.
+
+min(A,B,A):-B>A,!.
+min(A,B,B):-A>=B,!.
+
+minlist([E],E):-!.
+minlist([H|T],MI):-
+    minlist(T,R),
+    min(H,R,MI).
+
+removefirstocc([],_,[]):-!.
+removefirstocc([M|T],M,T):-!.
+removefirstocc([H|T],M,[H|R]):-
+    H\=M,
+    removefirstocc(T,M,R).
+
+main2(L,R):-
+    minlist(L,MI),
+    removefirstocc(L,MI,R).
+
+
+
+% a. Insert an element on the position n in a list
+
+%
+%insertonpos(l1l2..ln,e,pos) ={
+%				[], if n=0
+%				{e,l1} U l2..ln, pos=0
+%				l1 U insertonpos(l2..ln,e,pos-1),otherwise
+%				
+%
+
+insertonpos([],_,_,[]):-!.
+insertonpos(L,E,P,[E|L]):-
+    P=:=0,!.
+insertonpos([H|T],E,P,[H|R]):-
+    P\=0,
+    NP is P-1,
+    insertonpos(T,E,NP,R),!.
+
+
+% b. Define a predicate to determine the greatest common divisor of all numbers from a list.
+
+% myGCD(a,b)=
+% = a, if b = 0
+% = b, if a = 0
+% = myGCD(a % b, b), a >= b
+% = myGCD(a, b % a), a < b
+
+% myGCD(A:number,B:number,R:number)
+% (i,i,o)
+
+myGCD(0,B,B):-!.
+myGCD(A,0,A):-!.
+myGCD(A,B,R):-
+    A>=B,
+    A1 is A mod B,
+    myGCD(A1,B,R).
+myGCD(A,B,R):-
+    A<B,
+    B1 is B mod A,
+    myGCD(A,B1,R).
+
+% listGCD(l1l2...ln) = 
+% = l1 , if n = 1
+% myGCD(l1, listGCD(l2...ln)), otherwise
+
+% listGCD(L:list,R:list)
+% (i,o)
+
+listGCD([H],H).
+listGCD([H|T],R1):-
+    listGCD(T,R),
+    myGCD(H,R,R1).
+
+
+% a. Define a predicate to test if a list of an integer elements has a "valley" aspect
+%    (a set has a "valley" aspect if elements decreases up to a certain point, and then increases.
+%    eg: 10 8 6 9 11 13 – has a “valley” aspect
+
+% f = 1 -> decreasing sequence
+% f = 0 -> increasing sequence
+ 
+% valley(l1l2...ln, f)= 
+% = true, if n = 1 and f = 0
+% = valley(l2...ln, 1) , if l1 > l2 and f = 1
+% = valley(l2...ln, 0), if l1 < l2 and (f = 0 or f = 1)
+
+
+
+
+valley([_],F):-F=:=0,!.
+valley([H,P|T],F):-H>P,F=:=1, valley([P|T],1),!.
+valley([H,P|T],_):-P>H, valley([P|T],0),!.
+
+
+mainv(L):-
+    valley(L,0).
+
+% b. Calculate the alternate sum of list’s elements (l1 - l2 + l3 ...)
+%alternate(l1l2...ln,pos)={
+%			[],n=0
+%			l1+alternate(l2..ln,pos+1) if pos mod2 =0
+%			-l1+alternate(l2..ln,pos+1) if pos mod2 =1	
+%
+%
+
+alternate([],_,0):-!.
+alternate([H|T],P,NR):-
+    NP is P+1,
+    alternate(T,NP,R),
+    P mod 2=:=0,
+    NR is R+H.
+alternate([H|T],P,NR):-
+ 	NP is P+1,
+    alternate(T,NP,R),
+    P mod 2 =:=1,
+    NR is R-H.
+
+% b. Write a predicate to create the sublist (lm, …, ln) from the list (l1,…, lk).
+
+sublist(_,_,N,P,[]):-P>N,!.
+sublist([_|T],M,N,P,R):-P<M,
+    NP is P+1,
+    sublist(T,M,N,NP,R),!.
+sublist([H|T],M,N,P, [H|R]):-P>=M,N>=P,NP is P+1, sublist(T,M,N,NP,R),!.
+        
+% a. Write a predicate to substitute in a list a value with all the elements of another list.
+
+% Model matematic:
+% insert(l1...ln, list) =
+% 	list, n = 0
+% 	{l1} U insert(l2...ln, list), otherwise
+
+% insert(L:list, LIST:list, R:list)
+% (i,i,o)
+
+insert([],L,L).
+insert([H|T],L,[H|R]):-
+    insert(T,L,R).
+
+
+
+% substituteElem(l1l2...ln, e1, p1p2...pm) = 
+% = [], if n = 0
+% = substituteElem(insert(p1p2...pm, l2...ln), e1, p1p2...pm), if l1 = e1
+% = {l1} U substituteElem(l2...ln, e1, p1p2...pm), otherwise
+
+% substituteElem(L:list, E:number, P:list, R:list)
+% (i,i,i,o)
+
+substituteElem([],_,_,[]).
+substituteElem([H|T],E,P,R):-
+    H=:=E,
+    insert(P,T,RI),
+    substituteElem(RI,E,P,R).
+substituteElem([H|T],E,P,[H|R]):-
+    H=\=E,
+    substituteElem(T,E,P,R).
+    
+% b. Remove the n-th element of a list
+
+% removeNthElem(l1l2...lk, n) = 
+% [], if k = 0
+% removeNthElem(l2...lk, n - 1), if n = 0
+% {l1} U removeNthElem(l2...lk, n - 1), otherwise
+
+% removeNthElem(L:list, N:number, R:list)
+% (i,i,o)
+
+removeNthElem([],_,[]).
+removeNthElem([_|T],N,R):-
+    N =:= 0,
+    N1 is N - 1,
+    removeNthElem(T,N1,R),!.
+removeNthElem([H|T],N,[H|R]):-
+    N1 is N - 1,
+    removeNthElem(T,N1,R).

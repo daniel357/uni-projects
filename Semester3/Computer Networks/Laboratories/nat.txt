@@ -1,0 +1,9 @@
+Network Address Translation
+
+=> private ip adresses are used inside the LAN  so there might be duplicates at the same time,
+in case of accesing outside of LAN, the public IP adresses must be unique
+
+=> NAT modifies source/destination IP adresses of packets
+		why?
+=> to allow hosts with private IP adresses to communicate with other hosts over the Internet
+

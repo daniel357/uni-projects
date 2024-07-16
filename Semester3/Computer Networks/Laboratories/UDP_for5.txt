@@ -1,0 +1,67 @@
+// SERVER.C
+#include <netinet/ip.h> 
+#include <stdio.h>
+int sfd, len_csoc;
+char buf[10];
+
+
+struct sockaddr_in soc, client_soc;
+
+int main(){
+	sfd = socket(AF_INET, SOCK_DGRAM, 0);
+	soc.sin_family = AF_INET;
+	len_csoc = sizeof(struct sockaddr_in);
+	soc.sin_port = htons(9999);// PORT TREBUIE SA FIE MAI MARE DE 1024 daca nu esti administrator de sistem
+	soc.sin_addr.s_addr=INADDR_ANY;
+
+	//int bind(int sockfd, const struct sockaddr *addr,
+        //        socklen_t addrlen);
+	
+	printf("bind = %d bytes \n",bind(sfd, &soc, sizeof (struct sockaddr_in)));
+		
+
+
+	//recvfrom used to recover data from the client
+	//       ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
+        //                struct sockaddr *src_addr, socklen_t *addrlen);
+	printf("am primit %d bytes \n", recvfrom(sfd,buf, 100, 0,&client_soc, &len_csoc));
+	printf("am primit mesaju : %s \n", buf);
+	return 0;
+}
+
+
+
+// CLIENT.C
+
+#include <netinet/ip.h> 
+#include <stdio.h>
+int sfd;
+char buf[10] ="salut";
+
+//struct sockaddr_in {
+//              sa_family_t    sin_family; /* address family: AF_INET */
+//               in_port_t      sin_port;   /* port in network byte order */
+//               struct in_addr sin_addr;   /* internet address */
+//           };
+
+           /* Internet address. */
+//           struct in_addr {
+//               uint32_t       s_addr;     /* address in network byte order */
+//           };
+
+
+struct sockaddr_in soc;
+
+int main(){
+	sfd = socket(AF_INET, SOCK_DGRAM, 0);
+	soc.sin_family = AF_INET;
+	soc.sin_port = htons(9999);// PORT TREBUIE SA FIE MAI MARE DE 1024 daca nu esti administrator de sistem
+	soc.sin_addr.s_addr=inet_addr("127.0.0.1");
+
+	//sendto used to send while used UDP
+	// ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
+        //             const struct sockaddr *dest_addr, socklen_t addrlen);
+	printf("am trimis %d bytes \n",sendto(sfd, buf, sizeof (buf), 0, &soc, sizeof(struct sockaddr_in)));
+	return 0;
+}
+

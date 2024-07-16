@@ -1,0 +1,136 @@
+
+1.     ----- INTRE ROUTERE CABLU CROSSOVER-------
+	ROUTER empty => opresc => add 4 fast ethernet(nm 1CFE)
+		=> copy/paste pt nr routere (5) 
+		=> WIRE SWITCH->ROUTER prima placa de retea FE0/0
+		=> router -> config -> fast Ethernet 0/0 -> port status on -> ip +netmask
+		=> for each fast ethernet set the above settings
+
+	ROUTER wireless
+		=>SE LEAGA DE PORT DE INTERNET LA ROUTER WIRELESS
+		=> config -> internet ->IP static -> set IP +mmask +gateway +DNS server
+		=> pe LAN se afla o adresa privata
+		=>wireless ->SSID set name
+		=>GUI sa setez nr users mai mare decat 1
+
+2. 	---------UN SERVER WEB/DNS POATE FI SI SERVER DHCP---------
+	server DHCP
+		=> desktop ->ip config -> static -> ip +netmask +gateway + DNS server
+		=> services -> DHCP on -> start address: 3... + gateway + DNS + save
+
+   	server WEB
+		=> desktop ->ip config -> static -> ip +netmask +gateway + DNS server
+		=>services ->HTTP turn on -> edit index HTML write "page web"
+		=>check working -> desktop -> web ->url enter either IP either name from DNS
+
+	server DNS
+		=> desktop ->ip config -> static -> ip +netmask +gateway + DNS server
+		=>services ->DNS turn on -> add name/domain + add address web
+3. 
+	PC 
+		=>desktop ->ip config-> DHCP has to be succesful (if there is DHCP) otherwise static
+		
+
+	---------- daca NU este server -> facem router = server DHCP -> router ->CLI ->cod
+			enable
+			configure terminal
+			ip DHCP pool _POOL_NAME_
+			? //gives information 
+			network _NETWORK_IP_  _NETMASK_
+			default-router _ROUTER_IP_
+			dns-server _SERVER_IP_
+			ctrl +z //to exit
+			write memory //ca sa se salveze configuratia pe router
+			-> to check, turn a PC on DHCP
+4.
+	ACCES POINT -un fel de switch care face trecerea de pe comunicare prin cablu catre comunicarea wireless
+		=> connect it to the network
+		=> config -> port 1(wireless) -> set name/SSID
+
+5.	
+	LAPTOP
+		=> physical -> adaug placa de retea wireless WPC300N
+		=> config -> wireless0 ->set SSID name(ACCES POINT)
+		=> desktop ->ip config-> DHCP has to be succesful
+
+6. 
+	SMARTPHONE
+		=> config ->wireless0->setez reteaua la care sa se configureze
+		=>desktop -> IP ar trebui sa aiba DHCP din clasa privata a router wireless +
+			check if DNS is correct
+
+
+
+
+
+7.
+	ROUTARE STATICA -> un router cunoaste doar retelele la care este conectat prin cablu
+		restul trebuiesc adaugate in TABELA DE ROUTARE
+	
+	=>router x -> config ->	static routes -> 						
+		network = IP retelei la care trebuie sa ajunga
+		mask = retelei la care trebuie sa ajunga
+		next hop = IP router prin care trebuie sa treaca ca sa ajunga la retea(IP pentru fast ethernet corect)
+	
+
+	--------- daca un router este conectat doar la un alt router atunci pot sa zic ca R2 este default gateway pentru R1
+					network	 0.0.0.0, mask 0.0.0.0 next hop = ip router R2	(oriunde as vrea sa ajung/tot internet de la R1 trebuie sa trec prin R2)
+		
+
+
+	=> check if correct routing by PING
+
+8.
+	DYNAMIC ROUTING 
+		=> router x -> cli ->cod
+enable
+configure terminal
+router rip
+? // shows the commands that we can use
+version 2
+no auto-summary  
+network _NETWORK_ROUTER_IS_CONNECTED_TO // set each network the router is connected to
+
+show ip route  // show the ip routes from that router C-directly connected and R-routes using RIP
+
+
+---------pay attention when connecting another network to a router to specify in RIP that network too.
+
+
+
+
+
+
+9. 
+	DYNAMIC NAT -> translating all trafic from the lan
+
+	=> router x -> cli ->cod
+
+enable
+configure terminal
+int f0/0 
+ip nat outside // if f0/0 is towards outside
+int f0/1
+ip nat inside
+exit
+acces-list 1 permit _LAN_IP_ _LAN_MASK_
+ip nat pool POOL1 100.0.0.1 100.0.0.2 netmask 255.255.255.0 //pool will have only 2 translating addresses
+ip nat inside source list 1 pool POOL1
+
+
+#do show ip nat translations  //shows the translation table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

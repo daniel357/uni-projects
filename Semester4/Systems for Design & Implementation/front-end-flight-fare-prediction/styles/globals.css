@@ -1,0 +1,24 @@
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: #bfc1c4;
+  --background-color: #f8f9fa;
+  --text-color: #3ca89f;
+  --border-color: #dee2e6;
+  --button-hover-color: rgba(6, 60, 100, 0.8);;
+  --error-color: #dc3545;
+  --input-height: 40px;
+  --input-width: 100%;
+  --border-radius: 4px;
+  --navbar-background-color: #ffffff;
+  --navbar-link-color: #007bff;
+  --navbar-link-hover-color: #0056b3;
+  --navbar-height: 70px;
+  --logo-color: #007bff;
+  --background-image: url('/images/extended_height_background..png');
+}
+
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), var(--background-image) no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text-color);
+}

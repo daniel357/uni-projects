@@ -1,0 +1,128 @@
+%100
+
+% A. Fie L o listă numerică şi următoarea definiţie de predicat PROLOG f(list, integer), având modelul de flux (i, o):
+
+f([], 0).
+f([H|T],S):-f(T,S1),H<S1,!,S is H+S1.
+f([_|T],S):-f(T,S1), S is S1+2.
+
+% Rescrieți această definiție pentru a evita apelul recursiv f(T,S) în ambele clauze, fără a redefini logica clauzelor.
+%  Justificați răspunsul.
+
+
+f([],0).
+f([H|T], S):-
+    f(T,S1),
+    aux(S1, H, S).
+
+aux(S1, H,S):-
+    H<S1,!,
+    S is H+S1.
+
+aux(S1, _,S):-
+    S is S1+2.
+
+
+
+
+
+
+% B. Să se scrie un program PROLOG care generează lista permutărilor mulţimii 1..N,
+%    cu proprietatea că valoarea absolută a diferenţei între 2 valori consecutive
+%    din permutare este >=2. 
+%    Se vor scrie modelele matematice și modelele de flux pentru predicatele folosite.
+
+% Exemplu- pentru N=4 ⇒ [[3,1,4,2], [2,4,1,3]] (nu neapărat în această ordine)
+
+
+%createlist(n,i) ={
+%		[], if n=i+1
+%		{i} U createlist(n, i+1)
+%
+%crearelist(n-lenth, i-start element, R-resulting list)
+%
+%flow model(i,i,o).
+%
+%
+
+createlist(N,I, []):-
+    N =:= I+1.
+createlist(N, I, [I|R]):-
+    NI is I+1,
+    createlist(N, NI,R).
+
+
+
+% inserare(l1l2..ln, e) ={
+%		e U {l1l2..ln}
+%		inserare(l2l3..ln,e).
+%		
+% insert(E:element, L:list, R:list)
+% (i,i,o)
+
+inserare(L,E,[E|L]).
+inserare([H|T], E, [H|R]):-
+    inserare(T,E,R).
+
+
+%
+%perm(l1l2..ln) =	{
+%		[], n=0
+%		inserare(l1, perm(l2l3..ln))
+%
+
+
+perm([], []).
+perm([H|T], P):-
+    perm(T,P1),
+    inserare(P1,H,P).
+     
+%
+%absdif(a,b) =
+%		a-b, if a>=b
+%		b-a, if b>a
+%
+absdif(A,B,R):-
+    A>=B,
+    R is A-B.
+
+absdif(A,B,R):-
+    B>A,
+    R is B-A.
+
+%
+%checkdiff2(l1l2..ln)={
+%		true, if absdif(l1,l2)<2 //cand am ramas doar cu ultimele 2 elemente
+%		check(l2..ln) if absdif(l1,l2) <2
+%		false otherwise
+%
+
+checkdiff2([A,B]):-
+    absdif(A,B,R),
+    R>=2.
+
+checkdiff2([A,B|R]):-
+    absdif(A,B,RE),
+    RE>=2,
+    checkdiff2([B|R]),!.
+
+
+%
+%onesol(l1l2..ln)={
+%	check_diff(perm(l1l2..ln))
+%
+%
+
+onesol(L,R):-
+    perm(L,R),
+    checkdiff2(R).
+     
+%
+%maincall(l1l2..ln) =
+%		findall(partial_result, onesol(l1l2..ln, partial_result), united_results)
+%
+
+maincall(L,FR):-
+    findall(PR,onesol(L,PR),FR).
+     
+     
